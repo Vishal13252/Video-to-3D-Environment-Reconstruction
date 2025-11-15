@@ -1,0 +1,9 @@
+from google.colab import files
+files.download('/content/video2scene_workspace.zip')
+
+# Colab cell (Python) — triggers browser download
+from google.colab import files
+files.download('/content/video2scene_workspace.zip')
+
+from google.colab import drive
+drive.mount('/content/drive')
