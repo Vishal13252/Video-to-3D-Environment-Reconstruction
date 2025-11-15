@@ -1,0 +1,11 @@
+%%bash
+# Run in Colab (bash cell)
+python -V
+pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cu118  # try GPU-enabled torch
+pip install -q opencv-python imageio matplotlib open3d==0.16.0 timm
+# Install MiDaS repo
+rm -rf midas
+git clone https://github.com/isl-org/MiDaS.git midas
+cd midas
+pip install -q -r requirements.txt
+python -c "import torch, cv2, open3d; print('deps ok')"
