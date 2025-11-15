@@ -1,0 +1,16 @@
+%%bash
+sudo apt-get update -y
+
+# Install Ceres dev package and common numerical deps
+sudo apt-get install -y libceres-dev libcxsparse3 libatlas-base-dev liblapack-dev libblas-dev libsuitesparse-dev
+
+# Also ensure glog/gflags and other deps present (harmless if already installed)
+sudo apt-get install -y libgoogle-glog-dev libgflags-dev libeigen3-dev libfreeimage-dev libmetis-dev
+
+# Minimal OpenGL/Qt dependencies previously installed are fine; show versions
+echo "ceres version (pkg-config not always available):"
+dpkg -l | grep ceres || true
+
+# Sanity: show nvcc / nvidia
+which nvcc || echo "nvcc not found (OK if CUDA installed via drivers)"
+nvidia-smi -L || true
