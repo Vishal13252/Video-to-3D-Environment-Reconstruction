@@ -1,0 +1,7 @@
+%%bash
+# Install COLMAP and helpers (run once). Explanation: installs colmap, ffmpeg, opencv.
+sudo apt-get update -y
+sudo apt-get install -y colmap python3-opencv ffmpeg imagemagick
+# quick checks
+colmap -h | head -n 6
+python3 -c "import cv2; print('opencv', cv2.__version__)"
