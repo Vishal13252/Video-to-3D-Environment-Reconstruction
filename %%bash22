@@ -1,0 +1,27 @@
+%%bash
+set -e
+cd /content/colmap
+
+# clean and prepare
+rm -rf build
+mkdir build
+cd build
+
+# Configure CMake to enable CUDA (will look for nvcc)
+cmake .. -DCUDA_ENABLED=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local 2>&1 | tee /tmp/colmap_cmake.log
+
+# Build; if this OOMs, re-run with -j2 (instructions below)
+echo "Starting make (logs -> /tmp/colmap_build.log). If this fails with OOM, re-run with -j2."
+make -j$(nproc) 2>&1 | tee /tmp/colmap_build.log
+
+# Install to /usr/local
+sudo make install 2>&1 | tee /tmp/colmap_install.log
+sudo ldconfig
+
+# quick verification
+hash -r
+echo "colmap binary:"
+which colmap || true
+colmap -h | sed -n '1,6p' || true
+
+echo "*** BUILD FINISHED SUCCESSFULLY ***"
