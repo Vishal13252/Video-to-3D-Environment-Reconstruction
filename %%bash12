@@ -1,0 +1,2 @@
+%%bash
+tail -n 200 /tmp/colmap_mapper_now.log || echo "no mapper log"
