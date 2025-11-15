@@ -1,0 +1,13 @@
+%%bash
+WORKDIR=/content/video2scene/colmap/dense
+echo "Listing dense workspace:"
+ls -lah $WORKDIR || true
+echo
+echo "List images folder:"
+ls -lah $WORKDIR/images | sed -n '1,120p' || true
+echo
+echo "List depth maps (if present):"
+ls -lah $WORKDIR/depth_maps | sed -n '1,120p' || echo "no depth_maps"
+echo
+echo "List normals (if present):"
+ls -lah $WORKDIR/normals | sed -n '1,120p' || echo "no normals"
