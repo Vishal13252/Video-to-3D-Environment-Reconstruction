@@ -1,0 +1,13 @@
+%%bash
+# Detect GPU and set environment var to guide COLMAP flags
+if command -v nvidia-smi >/dev/null 2>&1; then
+  echo "GPU detected:"
+  nvidia-smi -L
+  export COLMAP_USE_GPU=1
+else
+  echo "No GPU detected — will run on CPU"
+  export COLMAP_USE_GPU=0
+fi
+echo "COLMAP_USE_GPU=$COLMAP_USE_GPU"
+# Persist for later cells in this session
+echo "export COLMAP_USE_GPU=$COLMAP_USE_GPU" >> /root/.bashrc
