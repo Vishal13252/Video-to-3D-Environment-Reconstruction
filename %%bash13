@@ -1,0 +1,19 @@
+%%bash
+WORKDIR=/content/video2scene/colmap
+IMAGEDIR=/content/video2scene/data/images
+
+# choose largest sparse model folder (heuristic)
+BEST="$(for d in $WORKDIR/sparse/*; do [ -f "$d/images.bin" ] && echo "$(stat -c%s "$d/images.bin") $d"; done | sort -n -r | head -n1 | awk '{print $2}')"
+echo "Using sparse model: $BEST"
+
+# prepare dense workspace
+mkdir -p $WORKDIR/dense
+
+colmap image_undistorter \
+  --image_path $IMAGEDIR \
+  --input_path "$BEST" \
+  --output_path $WORKDIR/dense \
+  --output_type COLMAP
+
+echo "Dense folder contents:"
+ls -lh $WORKDIR/dense | sed -n '1,200p'
