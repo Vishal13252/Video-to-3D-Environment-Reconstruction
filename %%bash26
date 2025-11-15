@@ -1,0 +1,13 @@
+%%bash
+mv /content/video2scene_workspace.zip /content/drive/MyDrive/
+ls -lh /content/drive/MyDrive/video2scene_workspace.zip
+echo "File moved to your Drive: /content/drive/MyDrive/video2scene_workspace.zip"
+
+%%bash
+md5sum /content/video2scene_workspace.zip || true
+
+%%bash
+mkdir -p ~/video2scene
+unzip ~/Downloads/video2scene_workspace.zip -d ~/video2scene
+cd ~/video2scene
+ls -la
