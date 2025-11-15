@@ -1,0 +1,6 @@
+!sudo apt update
+!sudo apt install -y build-essential cmake git python3-pip python3-venv \
+                   libboost-all-dev libeigen3-dev
+
+!pip install --upgrade pip
+!pip install opencv-python imageio numpy tqdm
