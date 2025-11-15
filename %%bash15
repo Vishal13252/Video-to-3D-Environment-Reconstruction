@@ -1,0 +1,9 @@
+%%bash
+WORKDIR=/content/video2scene/colmap
+colmap stereo_fusion \
+  --workspace_path $WORKDIR/dense \
+  --workspace_format COLMAP \
+  --output_path $WORKDIR/dense/fused.ply 2>&1 | tee /tmp/colmap_fusion.log
+
+ls -lh $WORKDIR/dense/fused.ply || echo "fused.ply missing"
+tail -n 40 /tmp/colmap_fusion.log || true
