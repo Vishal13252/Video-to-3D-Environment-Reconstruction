@@ -1,0 +1,10 @@
+%%bash
+IMAGEDIR=/content/video2scene/data/images
+WORKDIR=/content/video2scene/colmap
+mkdir -p $WORKDIR
+
+colmap feature_extractor --database_path $WORKDIR/database.db --image_path $IMAGEDIR --SiftExtraction.use_gpu 1
+colmap exhaustive_matcher --database_path $WORKDIR/database.db --SiftMatching.use_gpu 1
+mkdir -p $WORKDIR/sparse
+colmap mapper --database_path $WORKDIR/database.db --image_path $IMAGEDIR --output_path $WORKDIR/sparse
+ls -lh $WORKDIR/sparse
