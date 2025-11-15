@@ -1,0 +1,4 @@
+%%bash
+# Create project folders and show the uploaded video filename
+mkdir -p /content/video2scene/data/images
+ls -lh /content | sed -n '1,120p'
