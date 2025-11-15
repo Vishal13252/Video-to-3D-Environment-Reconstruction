@@ -1,0 +1,29 @@
+%%bash
+WORKDIR=/content/video2scene/colmap
+echo "Running PatchMatch Stereo with filtering + geom_consistency (GPU attempt, fallback to CPU)..."
+if colmap patch_match_stereo \
+    --workspace_path $WORKDIR/dense \
+    --workspace_format COLMAP \
+    --PatchMatchStereo.geom_consistency 1 \
+    --PatchMatchStereo.filter true \
+    --PatchMatchStereo.window_radius 4 \
+    --PatchMatchStereo.max_image_size 1600 \
+    --PatchMatchStereo.check_num_images 50 \
+    --PatchMatchStereo.num_samples 6 \
+    --PatchMatchStereo.use_gpu 1 2>&1 | tee /tmp/colmap_patch_retry.log; then
+  echo "PatchMatch (GPU) finished."
+else
+  echo "GPU PatchMatch failed — retrying on CPU with same options..."
+  colmap patch_match_stereo \
+    --workspace_path $WORKDIR/dense \
+    --workspace_format COLMAP \
+    --PatchMatchStereo.geom_consistency 1 \
+    --PatchMatchStereo.filter true \
+    --PatchMatchStereo.window_radius 4 \
+    --PatchMatchStereo.max_image_size 1600 \
+    --PatchMatchStereo.check_num_images 50 \
+    --PatchMatchStereo.num_samples 6 \
+    --PatchMatchStereo.use_gpu 0 2>&1 | tee /tmp/colmap_patch_retry_cpu.log
+fi
+# show a short snippet of log
+tail -n 120 /tmp/colmap_patch_retry*.log || true
