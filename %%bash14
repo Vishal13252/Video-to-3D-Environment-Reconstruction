@@ -1,0 +1,14 @@
+%%bash
+WORKDIR=/content/video2scene/colmap
+echo "Workspace: $WORKDIR/dense"
+
+echo "Trying PatchMatch Stereo with GPU..."
+if colmap patch_match_stereo --workspace_path $WORKDIR/dense --workspace_format COLMAP --PatchMatchStereo.geom_consistency 1 --PatchMatchStereo.use_gpu 1 2>&1 | tee /tmp/colmap_patch_gpu.log; then
+  echo "PatchMatch (GPU) succeeded."
+else
+  echo "PatchMatch (GPU) failed — retrying on CPU (slower)..."
+  colmap patch_match_stereo --workspace_path $WORKDIR/dense --workspace_format COLMAP --PatchMatchStereo.geom_consistency 1 --PatchMatchStereo.use_gpu 0 2>&1 | tee /tmp/colmap_patch_cpu.log
+fi
+
+# show a snippet of the log
+tail -n 80 /tmp/colmap_patch_*.log || true
