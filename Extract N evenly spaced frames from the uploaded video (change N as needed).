@@ -1,0 +1,24 @@
+# Extract N evenly spaced frames from the uploaded video (change N as needed).
+import cv2, os, glob
+video_candidates = glob.glob("/content/*.mp4") + glob.glob("/content/*.mov") + glob.glob("/content/*.mkv")
+if not video_candidates:
+    raise SystemExit("No video found in /content. Upload first.")
+video = video_candidates[0]
+out_dir = "/content/video2scene/data/images"
+os.makedirs(out_dir, exist_ok=True)
+cap = cv2.VideoCapture(video)
+total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+N = 80  # frames to extract (reduce to 40 if you want faster)
+indices = [int(total * i/(N-1)) for i in range(N)] if total>0 else []
+i = 0; saved = 0
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+    if i in indices:
+        path = os.path.join(out_dir, f"frame_{saved:04d}.jpg")
+        cv2.imwrite(path, frame)
+        saved += 1
+    i += 1
+cap.release()
+print(f"Saved {saved} frames to {out_dir}")
