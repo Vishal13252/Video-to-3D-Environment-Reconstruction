@@ -1,0 +1,12 @@
+%%bash
+echo "PATH: $PATH"
+echo "colmap location:"
+command -v colmap || true
+echo "--- colmap -h head ---"
+colmap -h | sed -n '1,6p' || true
+echo "--- QT platform env ---"
+echo "QT_QPA_PLATFORM=$QT_QPA_PLATFORM"
+echo "--- images count ---"
+ls -1 /content/video2scene/data/images | wc -l
+echo "--- list first 10 files ---"
+ls -lh /content/video2scene/data/images | sed -n '1,12p'
