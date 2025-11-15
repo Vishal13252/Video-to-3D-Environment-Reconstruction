@@ -1,0 +1,11 @@
+%%bash
+cd /content
+# Remove previous clone if present
+rm -rf colmap
+git clone https://github.com/colmap/colmap.git
+cd colmap
+git fetch --all --tags
+git checkout 3.12.6
+git status --porcelain || true
+echo "Checked out COLMAP tag:"
+git rev-parse --abbrev-ref HEAD || true
