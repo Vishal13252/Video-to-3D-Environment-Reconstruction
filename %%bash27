@@ -1,0 +1,82 @@
+%%bash
+rm -rf /content/video2scene
+mkdir -p /content/video2scene
+unzip /content/video2scene_workspace.zip -d /content/video2scene
+
+%%bash
+WORKDIR=/content/video2scene/colmap
+DENSE=$WORKDIR/dense
+
+echo "Workspace = $WORKDIR"
+ls -R $DENSE | head
+
+%%bash
+export QT_QPA_PLATFORM=offscreen
+
+WORKDIR=/content/video2scene/colmap
+DENSE=$WORKDIR/dense
+
+echo "Running PatchMatch Stereo (GPU)…"
+colmap patch_match_stereo \
+    --workspace_path $DENSE \
+    --workspace_format COLMAP \
+    --PatchMatchStereo.geom_consistency 1 \
+    --PatchMatchStereo.filter 1 \
+    --PatchMatchStereo.window_radius 4 \
+    --PatchMatchStereo.num_samples 10 \
+    --PatchMatchStereo.ncc_sigma 0.6 \
+    --PatchMatchStereo.max_image_size 2000 \
+    --PatchMatchStereo.num_iterations 5 \
+    --PatchMatchStereo.gpu_index 0 2>&1 | tee /tmp/pm_gpu.log
+
+echo
+echo "=== Tail of PatchMatch log ==="
+tail -n 40 /tmp/pm_gpu.log
+
+%%bash
+# Install apt-packaged colmap (fast). May already be present on some Colab images.
+sudo apt-get update -y
+sudo apt-get install -y colmap
+
+echo "colmap binary:"
+which colmap || echo "colmap not found"
+colmap -h | sed -n '1,6p' || true
+
+
+%%bash
+export QT_QPA_PLATFORM=offscreen
+WORKDIR=/content/video2scene/colmap
+DENSE=$WORKDIR/dense
+
+mkdir -p $WORKDIR
+echo "QT_QPA_PLATFORM=$QT_QPA_PLATFORM"
+echo "Images (data/images):"
+ls -1 /content/video2scene/data/images | wc -l
+ls -1 /content/video2scene/data/images | sed -n '1,10p'
+echo
+echo "Dense dir listing (before):"
+ls -la $DENSE || true
+
+%%bash
+set -e
+export QT_QPA_PLATFORM=offscreen
+WORKDIR=/content/video2scene/colmap
+DENSE=$WORKDIR/dense
+LOG=/tmp/colmap_patch_cpu.log
+
+echo "Running PatchMatch Stereo (CPU, conservative settings)..."
+colmap patch_match_stereo \
+    --workspace_path $DENSE \
+    --workspace_format COLMAP \
+    --PatchMatchStereo.max_image_size 900 \
+    --PatchMatchStereo.window_radius 3 \
+    --PatchMatchStereo.num_samples 5 \
+    --PatchMatchStereo.num_iterations 3 \
+    --PatchMatchStereo.geom_consistency 1 \
+    --PatchMatchStereo.filter 1 \
+    --PatchMatchStereo.filter_min_ncc 0.05 \
+    --PatchMatchStereo.filter_min_triangulation_angle 1 \
+    --PatchMatchStereo.gpu_index -1 2>&1 | tee $LOG
+
+echo; echo "=== tail of PatchMatch CPU log ==="
+tail -n 80 $LOG || true
