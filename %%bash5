@@ -1,0 +1,9 @@
+%%bash
+ls -lh /content/video2scene/data/images | head -n 12
+python3 - <<'PY'
+from IPython.display import display, Image
+import glob
+imgs = sorted(glob.glob('/content/video2scene/data/images/*.jpg'))[:6]
+for p in imgs:
+    display(Image(filename=p, width=200))
+PY
