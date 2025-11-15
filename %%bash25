@@ -1,0 +1,8 @@
+%%bash
+WORKDIR=/content/video2scene
+OUT=/content/video2scene_workspace.zip
+cd $WORKDIR
+# include sparse, dense (images & undistorted data), and database; exclude big temp logs
+zip -r $OUT colmap/data colmap/sparse colmap/dense colmap/database.db data/images 2>/dev/null || true
+echo "Zipped to: $OUT"
+ls -lh $OUT
