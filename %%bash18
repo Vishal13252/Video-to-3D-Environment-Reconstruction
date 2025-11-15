@@ -1,0 +1,18 @@
+%%bash
+export QT_QPA_PLATFORM=offscreen
+WORKDIR=/content/video2scene/colmap
+
+echo "Running PatchMatch Stereo on CPU with filtering (this may take time)..."
+colmap patch_match_stereo \
+  --workspace_path $WORKDIR/dense \
+  --workspace_format COLMAP \
+  --PatchMatchStereo.geom_consistency 1 \
+  --PatchMatchStereo.filter true \
+  --PatchMatchStereo.window_radius 4 \
+  --PatchMatchStereo.max_image_size 1200 \
+  --PatchMatchStereo.check_num_images 50 \
+  --PatchMatchStereo.num_samples 6 \
+  --PatchMatchStereo.use_gpu 0 2>&1 | tee /tmp/colmap_patch_cpu_final.log
+
+echo; echo "=== tail of PatchMatch (CPU) log ==="
+tail -n 120 /tmp/colmap_patch_cpu_final.log || true
