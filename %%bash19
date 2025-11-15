@@ -1,0 +1,21 @@
+%%bash
+# Remove apt version of colmap to avoid confusion (safe).
+sudo apt-get remove -y colmap || true
+sudo apt-get update -y
+
+# Install dependencies required to build COLMAP with CUDA
+sudo apt-get install -y build-essential git cmake \
+  libboost-all-dev libeigen3-dev libsuitesparse-dev \
+  libfreeimage-dev libgoogle-glog-dev libgflags-dev \
+  libgomp1 libmetis-dev libglew-dev libx11-dev libxcb1-dev \
+  libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev \
+  qtbase5-dev qttools5-dev qttools5-dev-tools
+
+# Ceres and other libs are in Ubuntu repos; install these too
+sudo apt-get install -y libcxsparse3 libatlas-base-dev liblapack-dev \
+  libblas-dev libsuitesparse-dev libgoogle-glog-dev libgflags-dev \
+  libatlas3-base
+
+# show CUDA visible (sanity)
+echo "CUDA location: $(which nvcc || echo 'nvcc not found')"
+nvidia-smi -L || true
