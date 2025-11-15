@@ -1,0 +1,34 @@
+%%bash
+export QT_QPA_PLATFORM=offscreen
+IMAGEDIR=/content/video2scene/data/images
+WORKDIR=/content/video2scene/colmap
+mkdir -p $WORKDIR
+echo "QT_QPA_PLATFORM=$QT_QPA_PLATFORM"
+echo "Image count: $(ls -1 $IMAGEDIR | wc -l)"
+
+set -o pipefail
+
+echo; echo "=== Step 1: feature_extractor (CPU) ==="
+colmap feature_extractor --database_path $WORKDIR/database.db --image_path $IMAGEDIR --SiftExtraction.use_gpu 0 2>&1 | tee /tmp/colmap_feat_cpu_now.log
+echo "feature_extractor exit:$?"
+
+echo; echo "=== Last 60 lines of feature_extractor log ==="
+tail -n 60 /tmp/colmap_feat_cpu_now.log || true
+
+echo; echo "=== Step 2: exhaustive_matcher (CPU) ==="
+colmap exhaustive_matcher --database_path $WORKDIR/database.db --SiftMatching.use_gpu 0 2>&1 | tee /tmp/colmap_match_cpu_now.log
+echo "exhaustive_matcher exit:$?"
+
+echo; echo "=== Last 60 lines of exhaustive_matcher log ==="
+tail -n 60 /tmp/colmap_match_cpu_now.log || true
+
+echo; echo "=== Step 3: mapper (sparse SfM) ==="
+mkdir -p $WORKDIR/sparse
+colmap mapper --database_path $WORKDIR/database.db --image_path $IMAGEDIR --output_path $WORKDIR/sparse 2>&1 | tee /tmp/colmap_mapper_now.log
+echo "mapper exit:$?"
+
+echo; echo "=== Last 120 lines of mapper log ==="
+tail -n 120 /tmp/colmap_mapper_now.log || true
+
+echo; echo "=== Sparse dir listing ==="
+ls -lh $WORKDIR/sparse || true
