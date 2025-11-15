@@ -1,0 +1,2 @@
+%%bash
+tail -n 200 /tmp/colmap_match_cpu_now.log || echo "no match log"
